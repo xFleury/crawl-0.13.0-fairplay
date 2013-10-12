@@ -1,0 +1,51 @@
+#!/bin/sh
+set -e
+
+CRAWL=${CRAWL:-./crawl -seed 1 -no-save}
+
+run_one()
+{
+    case "$*" in
+    1|woken_rest)
+        $CRAWL -rc test/stress/woken_rest.rc -sprint -sprint-map dungeon_sprint_1
+    ;;
+    2|unwoken_rest)
+        $CRAWL -rc test/stress/unwoken_rest.rc -sprint -sprint-map dungeon_sprint_1 -name CPU_hog2
+    ;;
+    3|fireworks)
+        $CRAWL -rc test/stress/fireworks.rc
+    ;;
+    4|cerebov)
+        $CRAWL -arena 'cerebov v test spawner delay:0'
+    ;;
+    5|pan_lords)
+        $CRAWL -arena 'cerebov, lom lobon, mnoleg, gloorx vloq v ereshkigal, asmodeus, antaeus, dispater delay:0 t:6'
+    ;;
+    6|miscasts)
+        $CRAWL -arena 'miscasts 5 pandemonium lord v 20 20-headed hydra delay:0 t:10'
+    ;;
+    7|kraken)
+        $CRAWL -arena 'kraken v spectral kraken arena:small_deep_pool delay:0 t:20'
+    ;;
+    8|abyss_rest)
+        $CRAWL -rc test/stress/abyss_short_wait.rc
+    ;;
+    9|abyss_walk)
+        $CRAWL -rc test/stress/abyss_short_run.rc
+    ;;
+    test) # Not in "all".
+        $CRAWL -test
+    ;;
+    *)
+        echo "No such test."
+        exit 1
+    esac
+}
+
+if [ "$*" = "all" ]
+  then
+    for x in 1 2 3 4 5 6 7 8 9; do run_one "$x";done
+    exit $?
+fi
+
+for x in "$@"; do run_one "$x";done
