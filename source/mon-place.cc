@@ -419,7 +419,7 @@ void spawn_random_monsters()
 
         mgen_data mg(WANDERING_MONSTER);
         mg.proximity = prox;
-        mg.foe = MHITYOU;
+        mg.foe = MHITNOT;
         mons_place(mg);
         viewwindow();
         return;
