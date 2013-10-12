@@ -289,7 +289,12 @@ bool builder(bool enable_random_maps, dungeon_feature_type dest_stairs_type)
         try
         {
             if (_build_level_vetoable(enable_random_maps, dest_stairs_type))
+			{
+				if(dgn_is_prespawned())
+					for(int spns = 0; spns < 200; ++spns)
+						spawn_random_monsters();
                 return true;
+			}
         }
         catch (map_load_exception &mload)
         {
@@ -431,6 +436,31 @@ static void _dgn_postprocess_level()
     _builder_assertions();
     _calc_density();
     _mark_solid_squares();
+}
+
+bool dgn_is_prespawned()
+{
+	switch(you.where_are_you)
+	{
+	case BRANCH_MAIN_DUNGEON: 
+	case BRANCH_ORCISH_MINES:
+	case BRANCH_ELVEN_HALLS: 
+	case BRANCH_DWARVEN_HALL:
+	case BRANCH_LAIR: 
+	case BRANCH_SWAMP:
+	case BRANCH_SHOALS: 
+	case BRANCH_SNAKE_PIT:
+	case BRANCH_SPIDER_NEST: 
+	case BRANCH_SLIME_PITS:
+	case BRANCH_VAULTS: 
+	case BRANCH_HALL_OF_BLADES:
+	case BRANCH_CRYPT: 
+	case BRANCH_TOMB:
+	case BRANCH_HALL_OF_ZOT:
+		return true;
+	default:
+		return false;
+	}
 }
 
 void dgn_clear_vault_placements(vault_placement_refv &vps)

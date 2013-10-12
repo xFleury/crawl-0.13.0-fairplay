@@ -412,16 +412,14 @@ void spawn_random_monsters()
     {
         dprf("Placing monster, rate: %d, turns here: %d",
              rate, env.turns_on_level);
-        proximity_type prox = (one_chance_in(10) ? PROX_NEAR_STAIRS
-                                                 : PROX_AWAY_FROM_PLAYER);
+        proximity_type prox = ((!dgn_is_prespawned() && one_chance_in(10)) ? PROX_NEAR_STAIRS
+                                                                          : PROX_AWAY_FROM_PLAYER);
 
-        // The rules change once the player has picked up the Orb...
-        if (you.char_direction == GDT_ASCENDING)
-            prox = (one_chance_in(3) ? PROX_CLOSE_TO_PLAYER : PROX_ANYWHERE);
+		// TODO: Consider introducing a new challenge for escaping with the Orb.
 
         mgen_data mg(WANDERING_MONSTER);
         mg.proximity = prox;
-        mg.foe = (you.char_direction == GDT_ASCENDING) ? MHITYOU : MHITNOT;
+        mg.foe = MHITYOU;
         mons_place(mg);
         viewwindow();
         return;
@@ -3108,18 +3106,7 @@ monster* mons_place(mgen_data mg)
     if (mon_count >= MAX_MONSTERS - 1)
         return 0;
 
-    // This gives a slight challenge to the player as they ascend the
-    // dungeon with the Orb.
-    if (you.char_direction == GDT_ASCENDING && _is_random_monster(mg.cls)
-        && player_in_connected_branch() && !mg.summoned())
-    {
-#ifdef DEBUG_MON_CREATION
-        mpr("Call _pick_zot_exit_defender()", MSGCH_DIAGNOSTICS);
-#endif
-        mg.cls    = _pick_zot_exit_defender();
-        mg.flags |= MG_PERMIT_BANDS;
-    }
-    else if (_is_random_monster(mg.cls))
+	if (_is_random_monster(mg.cls))
         mg.flags |= MG_PERMIT_BANDS;
 
     if (crawl_state.game_is_zotdef()) // check if emulation of old mg.power is there

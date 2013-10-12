@@ -2192,7 +2192,9 @@ void handle_time()
     if (_div(base_time, 50) > _div(old_time, 50)
         && !crawl_state.game_is_zotdef())
     {
-        spawn_random_monsters();
+		if(!dgn_is_prespawned())
+			spawn_random_monsters();
+
         if (player_in_branch(BRANCH_ABYSS))
           for (int i = 1; i < you.depth; ++i)
                 if (x_chance_in_y(i, 5))
