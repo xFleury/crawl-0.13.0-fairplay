@@ -115,7 +115,8 @@ void shuffle_array(T* arr, int n)
 template <typename T>
 void shuffle_array(vector<T> &vec)
 {
-    shuffle_array(&vec[0], vec.size());
+    if(vec.size() > 0)
+        shuffle_array(&vec[0], vec.size());
 }
 
 class rng_save_excursion
