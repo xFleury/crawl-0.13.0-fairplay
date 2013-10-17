@@ -120,7 +120,7 @@ struct map_cell
 
     dungeon_feature_type feat() const
     {
-        return _feat;
+		return dungeon_feature_type(uint8_t(_feat));
     }
 
     unsigned feat_colour() const
